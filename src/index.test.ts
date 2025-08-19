@@ -11,6 +11,7 @@ interface User {
 	}
 	joined: Date
 	logins: number | null
+	active: boolean
 }
 
 const users = () =>
@@ -20,28 +21,32 @@ const users = () =>
 			age: 30,
 			address: { city: 'New York', zip: 10001 },
 			joined: new Date('2022-01-15'),
-			logins: 10
+			logins: 10,
+			active: true
 		},
 		{
 			name: 'Bob',
 			age: 25,
 			address: { city: 'Los Angeles', zip: 90001 },
 			joined: new Date('2021-11-20'),
-			logins: 25
+			logins: 25,
+			active: false
 		},
 		{
 			name: 'Charlie',
 			age: 30,
 			address: { city: 'Chicago', zip: 60601 },
 			joined: new Date('2023-03-10'),
-			logins: null
+			logins: null,
+			active: true
 		},
 		{
 			name: 'David',
 			age: 28,
 			address: { city: 'New York', zip: 10002 },
 			joined: new Date('2022-01-15'),
-			logins: 5
+			logins: 5,
+			active: false
 		}
 	] satisfies User[]
 
@@ -51,6 +56,14 @@ describe('by', () => {
 		assert.deepStrictEqual(
 			sorted.map(u => u.name),
 			['Alice', 'Bob', 'Charlie', 'David']
+		)
+	})
+
+	it('sorts by a single string property in descending order', () => {
+		const sorted = users().sort(by('name', 'desc'))
+		assert.deepStrictEqual(
+			sorted.map(u => u.name),
+			['David', 'Charlie', 'Bob', 'Alice']
 		)
 	})
 
@@ -67,6 +80,14 @@ describe('by', () => {
 		assert.deepStrictEqual(
 			sorted.map(u => u.name),
 			['Charlie', 'Bob', 'Alice', 'David']
+		)
+	})
+
+	it('sorts by multiple properties in descending order', () => {
+		const sorted = users().sort(by(['age', 'name'], 'desc'))
+		assert.deepStrictEqual(
+			sorted.map(u => u.name),
+			['Charlie', 'Alice', 'David', 'Bob']
 		)
 	})
 
@@ -91,6 +112,22 @@ describe('by', () => {
 		assert.deepStrictEqual(
 			sorted.map(u => u.logins),
 			[null, 5, 10, 25]
+		)
+	})
+
+	it('handles null and undefined values for desc', () => {
+		const sorted = users().sort(by('logins', 'desc'))
+		assert.deepStrictEqual(
+			sorted.map(u => u.logins),
+			[25, 10, 5, null]
+		)
+	})
+
+	it('supports boolean values', () => {
+		const sorted = users().sort(by('active'))
+		assert.deepStrictEqual(
+			sorted.map(u => u.active),
+			[false, false, true, true]
 		)
 	})
 })

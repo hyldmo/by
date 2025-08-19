@@ -2,9 +2,9 @@ import type { Paths } from 'type-fest'
 
 export type Order = 'asc' | 'desc'
 
-export type Selector<T> = Paths<T> | ((obj: T) => any)
+export type Selector<T> = Paths<T> | ((obj: T) => string | number | Date | null | undefined | boolean)
 
-const get = <T>(obj: T, selector: Selector<T>): any => {
+function get<T>(obj: T, selector: Selector<T>): any {
 	if (typeof selector === 'function') {
 		return selector(obj)
 	}
@@ -16,7 +16,7 @@ const get = <T>(obj: T, selector: Selector<T>): any => {
 	return (obj as any)[selector]
 }
 
-export const compare = (a: any, b: any): number => {
+export function compare(a: any, b: any): number {
 	if (a === b) {
 		return 0
 	}
@@ -50,8 +50,9 @@ export const compare = (a: any, b: any): number => {
 }
 
 export function by<T>(selector: Selector<T>, order?: Order): (a: T, b: T) => number
-export function by<T>(selectors: Selector<T>[]): (a: T, b: T) => number
+export function by<T>(selectors: Selector<T>[], order?: Order): (a: T, b: T) => number
 export function by<T>(selectors: Selector<T> | Selector<T>[], order: Order = 'asc'): (a: T, b: T) => number {
+	const direction = order === 'asc' ? 1 : -1
 	if (Array.isArray(selectors)) {
 		return (a: T, b: T) => {
 			for (const selector of selectors) {
@@ -61,15 +62,13 @@ export function by<T>(selectors: Selector<T> | Selector<T>[], order: Order = 'as
 				const result = compare(valueA, valueB)
 
 				if (result !== 0) {
-					return result
+					return result * direction
 				}
 			}
 
 			return 0
 		}
 	}
-
-	const direction = order === 'asc' ? 1 : -1
 
 	return (a: T, b: T) => {
 		const valueA = get(a, selectors)
