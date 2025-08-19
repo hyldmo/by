@@ -53,8 +53,12 @@ const compare = (a: any, b: any): number => {
 export function by<T>(criteria: Criterion<T>[]): (a: T, b: T) => number
 export function by<T>(selector: Selector<T>, order?: Order): (a: T, b: T) => number
 export function by<T>(selectorOrCriteria: Selector<T> | Criterion<T>[], order: Order = 'asc'): (a: T, b: T) => number {
-	if (Array.isArray(selectorOrCriteria)) {
-		const criteria = selectorOrCriteria
+	if (
+		Array.isArray(selectorOrCriteria) &&
+		selectorOrCriteria.length > 0 &&
+		(selectorOrCriteria[0] as Criterion<T>).selector !== undefined
+	) {
+		const criteria = selectorOrCriteria as Criterion<T>[]
 
 		return (a: T, b: T) => {
 			for (const criterion of criteria) {
@@ -73,7 +77,7 @@ export function by<T>(selectorOrCriteria: Selector<T> | Criterion<T>[], order: O
 		}
 	}
 
-	const selector = selectorOrCriteria
+	const selector = selectorOrCriteria as Selector<T>
 	const direction = order === 'asc' ? 1 : -1
 
 	return (a: T, b: T) => {

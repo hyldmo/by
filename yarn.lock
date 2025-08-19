@@ -180,6 +180,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hyldmo/by@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@hyldmo/by@workspace:."
+  dependencies:
+    "@biomejs/biome": "npm:^2.1.1"
+    "@semantic-release/changelog": "npm:^6.0.3"
+    "@semantic-release/git": "npm:^10.0.1"
+    "@semantic-release/github": "npm:^11.0.3"
+    "@semantic-release/npm": "npm:^12.0.2"
+    "@types/node": "npm:^24.0.12"
+    commitizen: "npm:^4.3.1"
+    cz-conventional-changelog: "npm:^3.3.0"
+    semantic-release: "npm:^24.2.6"
+    typescript: "npm:^5.9.2"
+  languageName: unknown
+  linkType: soft
+
 "@isaacs/cliui@npm:^8.0.2":
   version: 8.0.2
   resolution: "@isaacs/cliui@npm:8.0.2"
@@ -1101,23 +1118,6 @@ __metadata:
   checksum: 10c0/27cac81cff434ed2876058d72e7c4789d11ff1120ef32c9de48f59eab58179b66710c488987d295ae89a228f835fc66d088652dffeb8e3ba8659f80eb091d55e
   languageName: node
   linkType: hard
-
-"by@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "by@workspace:."
-  dependencies:
-    "@biomejs/biome": "npm:^2.1.1"
-    "@semantic-release/changelog": "npm:^6.0.3"
-    "@semantic-release/git": "npm:^10.0.1"
-    "@semantic-release/github": "npm:^11.0.3"
-    "@semantic-release/npm": "npm:^12.0.2"
-    "@types/node": "npm:^24.0.12"
-    commitizen: "npm:^4.3.1"
-    cz-conventional-changelog: "npm:^3.3.0"
-    semantic-release: "npm:^24.2.6"
-    typescript: "npm:^5.9.2"
-  languageName: unknown
-  linkType: soft
 
 "cacache@npm:^19.0.0, cacache@npm:^19.0.1":
   version: 19.0.1
