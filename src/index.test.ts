@@ -62,11 +62,11 @@ describe('by', () => {
 		)
 	})
 
-	it('sorts by a nested property', () => {
-		const sorted = users().sort(by(['address', 'city']))
+	it('sorts by multiple nested properties', () => {
+		const sorted = users().sort(by(['address.city', 'name']))
 		assert.deepStrictEqual(
-			sorted.map(u => u.address.city),
-			['Chicago', 'Los Angeles', 'New York', 'New York']
+			sorted.map(u => u.name),
+			['Charlie', 'Bob', 'Alice', 'David']
 		)
 	})
 
@@ -75,19 +75,6 @@ describe('by', () => {
 		assert.deepStrictEqual(
 			sorted.map(u => u.name),
 			['Bob', 'Alice', 'David', 'Charlie']
-		)
-	})
-
-	it('sorts by multiple criteria', () => {
-		const sorted = users().sort(
-			by([
-				{ selector: 'age', order: 'desc' },
-				{ selector: 'name', order: 'asc' }
-			])
-		)
-		assert.deepStrictEqual(
-			sorted.map(u => u.name),
-			['Alice', 'Charlie', 'David', 'Bob']
 		)
 	})
 
@@ -104,28 +91,6 @@ describe('by', () => {
 		assert.deepStrictEqual(
 			sorted.map(u => u.logins),
 			[null, 5, 10, 25]
-		)
-	})
-
-	it('sorts correctly with multiple complex criteria', () => {
-		const sorted = users().sort(
-			by([
-				{ selector: ['address', 'city'], order: 'asc' },
-				{ selector: 'age', order: 'desc' }
-			])
-		)
-
-		assert.deepStrictEqual(
-			sorted.map(u => u.name),
-			['Charlie', 'Bob', 'Alice', 'David']
-		)
-		assert.deepStrictEqual(
-			sorted.map(u => u.address.city),
-			['Chicago', 'Los Angeles', 'New York', 'New York']
-		)
-		assert.deepStrictEqual(
-			sorted.map(u => u.age),
-			[30, 25, 30, 28]
 		)
 	})
 })

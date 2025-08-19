@@ -1,23 +1,22 @@
+import type { Paths } from 'type-fest'
+
 export type Order = 'asc' | 'desc'
-export type Selector<T> = keyof T | (string | number)[] | ((obj: T) => any)
-export type Criterion<T> = {
-	selector: Selector<T>
-	order?: Order
-}
+
+export type Selector<T> = Paths<T> | ((obj: T) => any)
 
 const get = <T>(obj: T, selector: Selector<T>): any => {
 	if (typeof selector === 'function') {
 		return selector(obj)
 	}
 
-	if (Array.isArray(selector)) {
-		return selector.reduce((acc: any, key) => acc?.[key], obj)
+	if (typeof selector === 'string' && selector.includes('.')) {
+		return selector.split('.').reduce((acc: any, key) => acc?.[key], obj)
 	}
 
-	return obj[selector]
+	return (obj as any)[selector]
 }
 
-const compare = (a: any, b: any): number => {
+export const compare = (a: any, b: any): number => {
 	if (a === b) {
 		return 0
 	}
@@ -50,23 +49,16 @@ const compare = (a: any, b: any): number => {
 	return 0
 }
 
-export function by<T>(criteria: Criterion<T>[]): (a: T, b: T) => number
 export function by<T>(selector: Selector<T>, order?: Order): (a: T, b: T) => number
-export function by<T>(selectorOrCriteria: Selector<T> | Criterion<T>[], order: Order = 'asc'): (a: T, b: T) => number {
-	if (
-		Array.isArray(selectorOrCriteria) &&
-		selectorOrCriteria.length > 0 &&
-		(selectorOrCriteria[0] as Criterion<T>).selector !== undefined
-	) {
-		const criteria = selectorOrCriteria as Criterion<T>[]
-
+export function by<T>(selectors: Selector<T>[]): (a: T, b: T) => number
+export function by<T>(selectors: Selector<T> | Selector<T>[], order: Order = 'asc'): (a: T, b: T) => number {
+	if (Array.isArray(selectors)) {
 		return (a: T, b: T) => {
-			for (const criterion of criteria) {
-				const direction = (criterion.order ?? 'asc') === 'asc' ? 1 : -1
-				const valueA = get(a, criterion.selector)
-				const valueB = get(b, criterion.selector)
+			for (const selector of selectors) {
+				const valueA = get(a, selector)
+				const valueB = get(b, selector)
 
-				const result = compare(valueA, valueB) * direction
+				const result = compare(valueA, valueB)
 
 				if (result !== 0) {
 					return result
@@ -77,12 +69,11 @@ export function by<T>(selectorOrCriteria: Selector<T> | Criterion<T>[], order: O
 		}
 	}
 
-	const selector = selectorOrCriteria as Selector<T>
 	const direction = order === 'asc' ? 1 : -1
 
 	return (a: T, b: T) => {
-		const valueA = get(a, selector)
-		const valueB = get(b, selector)
+		const valueA = get(a, selectors)
+		const valueB = get(b, selectors)
 		return compare(valueA, valueB) * direction
 	}
 }
