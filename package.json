@@ -1,6 +1,6 @@
 {
   "name": "@hyldmo/by",
-  "version": "0.0.0-development",
+  "version": "1.0.0",
   "description": "A simple and powerful sortby implementation in TypeScript.",
   "author": "hyldmo",
   "type": "module",
