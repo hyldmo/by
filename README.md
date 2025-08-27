@@ -1,6 +1,6 @@
 # by
 
-A tiny, powerful sorting utility for arrays of objects in TypeScript and JavaScript. `sortBy` provides a flexible and intuitive way to sort complex data structures.
+A tiny, powerful sorting utility for arrays of objects in TypeScript and JavaScript. `@hyldmo/by` provides a flexible and intuitive way to sort complex data structures.
 
 ## Features
 
@@ -8,18 +8,18 @@ A tiny, powerful sorting utility for arrays of objects in TypeScript and JavaScr
 -   **Flexible Selectors**: Sort by property keys, nested paths, or custom accessor functions.
 -   **Multi-Criteria Sorting**: Easily define multiple sorting rules with different orders.
 -   **Intuitive API**: A single function `by` that is easy to learn and use.
--   **Handles Complex Types**: Properly sorts strings, numbers, Dates, and handles `null`/`undefined` values gracefully.
+-   **Handles Complex Types**: Properly sorts strings, numbers, booleans, Dates, and handles `null`/`undefined` values gracefully.
 
 ## Installation
 
 ```bash
-yarn add sortby
+yarn add @hyldmo/by
 ```
 
 or
 
 ```bash
-npm install sortby
+npm install @hyldmo/by
 ```
 
 ## Usage
@@ -27,7 +27,7 @@ npm install sortby
 Import the `by` function and use it with `Array.prototype.sort`.
 
 ```typescript
-import { by } from 'sortby'
+import { by } from '@hyldmo/by'
 
 const users = [
 	{ name: 'Alice', age: 30 },
@@ -42,17 +42,19 @@ users.sort(by('name'))
 
 ### Sorting by Different Orders
 
-You can specify `'asc'` (ascending) or `'desc'` (descending) order.
+Use the `Order` enum for ascending or descending order.
 
 ```typescript
+import { by, Order } from '@hyldmo/by'
+
 // Sort by age in descending order
-users.sort(by('age', 'desc'))
+users.sort(by('age', Order.Desc))
 // => [ { name: 'Alice', age: 30 }, { name: 'Charlie', age: 30 }, { name: 'Bob', age: 25 } ]
 ```
 
 ### Sorting by Nested Properties
 
-Use an array of keys to sort by a nested property.
+Use dot-path strings to sort by nested properties. Paths are type-safe via `type-fest` `Paths<T>`.
 
 ```typescript
 const users = [
@@ -61,45 +63,49 @@ const users = [
 	{ name: 'Charlie', address: { city: 'Chicago' } }
 ]
 
-users.sort(by(['address', 'city']))
+users.sort(by('address.city'))
 // => [ { name: 'Charlie', ... }, { name: 'Bob', ... }, { name: 'Alice', ... } ]
 ```
 
-### Sorting with a Selector Function
+### Sorting with a Custom Selector
 
-For complex sorting logic, provide a function as the selector.
+Provide a function to sort by a derived value (e.g., name length, case-insensitive key, normalized text). Dates are already supported without a custom selector.
 
 ```typescript
 const users = [
-	{ name: 'Alice', joined: new Date('2023-01-15') },
-	{ name: 'Bob', joined: new Date('2022-11-20') }
+	{ name: 'Alice' },
+	{ name: 'Bob' },
+	{ name: 'Charlie' }
 ]
 
-users.sort(by(user => user.joined.getTime()))
-// => [ { name: 'Bob', ... }, { name: 'Alice', ... } ]
+// Sort by name length (shortest first)
+users.sort(by(u => u.name.length))
+// => [ { name: 'Bob' }, { name: 'Alice' }, { name: 'Charlie' } ]
+
+// Case-insensitive name sort using a normalized key
+users.sort(by(u => u.name.toLocaleLowerCase()))
 ```
 
 ### Sorting by Multiple Criteria
 
-Pass an array of criteria objects to sort by multiple properties. The array is sorted by each criterion in order.
+Pass an array of selectors to sort by multiple properties. Earlier selectors have higher priority. Optionally pass a single `Order` that applies to all selectors.
 
 ```typescript
+import { by, Order } from '@hyldmo/by'
+
 const users = [
 	{ name: 'Alice', age: 30 },
 	{ name: 'Bob', age: 25 },
 	{ name: 'Charlie', age: 30 }
 ]
 
-users.sort(
-	by([
-		{ selector: 'age', order: 'desc' }, // 1. by age descending
-		{ selector: 'name', order: 'asc' } // 2. then by name ascending
-	])
-)
-// => [ { name: 'Alice', age: 30 }, { name: 'Charlie', age: 30 }, { name: 'Bob', age: 25 } ]
-```
+// 1) by age descending, 2) then by name descending
+users.sort(by(['age', 'name'], Order.Desc))
+// => [ { name: 'Charlie', age: 30 }, { name: 'Alice', age: 30 }, { name: 'Bob', age: 25 } ]
 
-The selectors within the criteria array can also be nested paths or functions.
+// Multiple selectors evaluated in order
+users.sort(by(['age', 'name']))
+```
 
 ### Handling `null` and `undefined`
 
@@ -110,22 +116,41 @@ const items = [{ value: 10 }, { value: null }, { value: 5 }]
 
 items.sort(by('value'))
 // => [ { value: null }, { value: 5 }, { value: 10 } ]
-
-items.sort(by('value', 'desc'))
+import { Order } from '@hyldmo/by'
+items.sort(by('value', Order.Desc))
 // => [ { value: null }, { value: 10 }, { value: 5 } ]
 ```
 
 ## API
 
+### Automatically handled data types
+
+The comparator automatically handles: `string`, `number`, `boolean`, `Date`, and sorts `null`/`undefined` to the beginning, regardless of order. Use a custom selector only for derived values or normalization.
+
 ### `by<T>(selector, order?)`
 
--   **`selector`**: `keyof T | (string | number)[] | ((obj: T) => any)`
-    -   A property key of `T`.
-    -   An array representing a path to a nested property.
-    -   A function that receives an object and returns a value to sort by.
--   **`order`**: `'asc' | 'desc'` (optional, defaults to `'asc'`)
+-   **`selector`**: `Selector<T>`
+    -   A property path of `T` (supports dot-paths via `Paths<T>`).
+    -   A function that receives an object and returns a sortable value.
+-   **`order`**: `Order` (optional, defaults to `Order.Asc`)
 
-### `by<T>(criteria)`
+### `by<T>(selectors, order?)`
 
--   **`criteria`**: `Array<{ selector: Selector<T>, order?: 'asc' | 'desc' }>`
-    -   An array of criterion objects.
+-   **`selectors`**: `Selector<T>[]`
+    -   An array of selectors evaluated in order until a difference is found.
+-   **`order`**: `Order` (optional, defaults to `Order.Asc`)
+
+### Types
+
+```ts
+import type { Paths } from 'type-fest'
+
+export enum Order {
+	Asc = 1,
+	Desc = -1
+}
+
+export type Selector<T> =
+	| Paths<T>
+	| ((obj: T) => string | number | Date | null | undefined | boolean)
+```
