@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/hyldmo/by/compare/v1.0.1...v1.0.2) (2025-08-27)
+
+
+### Bug Fixes
+
+* change asc & desc to enum for better perf ([f80667b](https://github.com/hyldmo/by/commit/f80667b138c73f722532e650af48f90852b8161a))
+
 ## [1.0.1](https://github.com/hyldmo/by/compare/v1.0.0...v1.0.1) (2025-08-19)
 
 
