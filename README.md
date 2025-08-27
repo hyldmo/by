@@ -1,4 +1,4 @@
-# sortby
+# by
 
 A tiny, powerful sorting utility for arrays of objects in TypeScript and JavaScript. `sortBy` provides a flexible and intuitive way to sort complex data structures.
 
