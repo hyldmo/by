@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { describe, it } from 'node:test'
-import { by } from './index.ts'
+import { by, Order } from './index.ts'
 
 interface User {
 	name: string
@@ -59,8 +59,16 @@ describe('by', () => {
 		)
 	})
 
+	it('sorts by a single string property in ascending order', () => {
+		const sorted = users().sort(by('name', Order.Asc))
+		assert.deepStrictEqual(
+			sorted.map(u => u.name),
+			['Alice', 'Bob', 'Charlie', 'David']
+		)
+	})
+
 	it('sorts by a single string property in descending order', () => {
-		const sorted = users().sort(by('name', 'desc'))
+		const sorted = users().sort(by('name', Order.Desc))
 		assert.deepStrictEqual(
 			sorted.map(u => u.name),
 			['David', 'Charlie', 'Bob', 'Alice']
@@ -68,7 +76,7 @@ describe('by', () => {
 	})
 
 	it('sorts by a single number property in descending order', () => {
-		const sorted = users().sort(by('age', 'desc'))
+		const sorted = users().sort(by('age', Order.Desc))
 		assert.deepStrictEqual(
 			sorted.map(u => u.age),
 			[30, 30, 28, 25]
@@ -84,7 +92,7 @@ describe('by', () => {
 	})
 
 	it('sorts by multiple properties in descending order', () => {
-		const sorted = users().sort(by(['age', 'name'], 'desc'))
+		const sorted = users().sort(by(['age', 'name'], Order.Desc))
 		assert.deepStrictEqual(
 			sorted.map(u => u.name),
 			['Charlie', 'Alice', 'David', 'Bob']
@@ -115,8 +123,16 @@ describe('by', () => {
 		)
 	})
 
+	it('handles null and undefined values for asc', () => {
+		const sorted = users().sort(by('logins', Order.Asc))
+		assert.deepStrictEqual(
+			sorted.map(u => u.logins),
+			[null, 5, 10, 25]
+		)
+	})
+
 	it('handles null and undefined values for desc', () => {
-		const sorted = users().sort(by('logins', 'desc'))
+		const sorted = users().sort(by('logins', Order.Desc))
 		assert.deepStrictEqual(
 			sorted.map(u => u.logins),
 			[25, 10, 5, null]

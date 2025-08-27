@@ -1,6 +1,10 @@
 import type { Paths } from 'type-fest'
 
-export type Order = 'asc' | 'desc'
+export enum Order {
+	Asc = 1,
+	Desc = -1
+}
+
 
 export type Selector<T> = Paths<T> | ((obj: T) => string | number | Date | null | undefined | boolean)
 
@@ -51,8 +55,7 @@ export function compare(a: any, b: any): number {
 
 export function by<T>(selector: Selector<T>, order?: Order): (a: T, b: T) => number
 export function by<T>(selectors: Selector<T>[], order?: Order): (a: T, b: T) => number
-export function by<T>(selectors: Selector<T> | Selector<T>[], order: Order = 'asc'): (a: T, b: T) => number {
-	const direction = order === 'asc' ? 1 : -1
+export function by<T>(selectors: Selector<T> | Selector<T>[], order: Order = Order.Asc): (a: T, b: T) => number {
 	if (Array.isArray(selectors)) {
 		return (a: T, b: T) => {
 			for (const selector of selectors) {
@@ -62,7 +65,7 @@ export function by<T>(selectors: Selector<T> | Selector<T>[], order: Order = 'as
 				const result = compare(valueA, valueB)
 
 				if (result !== 0) {
-					return result * direction
+					return result * order
 				}
 			}
 
@@ -73,6 +76,6 @@ export function by<T>(selectors: Selector<T> | Selector<T>[], order: Order = 'as
 	return (a: T, b: T) => {
 		const valueA = get(a, selectors)
 		const valueB = get(b, selectors)
-		return compare(valueA, valueB) * direction
+		return compare(valueA, valueB) * order
 	}
 }
