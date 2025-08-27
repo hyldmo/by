@@ -5,7 +5,6 @@ export enum Order {
 	Desc = -1
 }
 
-
 export type Selector<T> = Paths<T> | ((obj: T) => string | number | Date | null | undefined | boolean)
 
 function get<T>(obj: T, selector: Selector<T>): any {

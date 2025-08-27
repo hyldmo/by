@@ -109,7 +109,7 @@ users.sort(by(['age', 'name']))
 
 ### Handling `null` and `undefined`
 
-`null` and `undefined` values are always sorted to the beginning of the array, regardless of the sort order.
+`null` and `undefined` values are sorted to the beginning in ascending order, and to the end in descending order.
 
 ```typescript
 const items = [{ value: 10 }, { value: null }, { value: 5 }]
@@ -118,14 +118,14 @@ items.sort(by('value'))
 // => [ { value: null }, { value: 5 }, { value: 10 } ]
 import { Order } from '@hyldmo/by'
 items.sort(by('value', Order.Desc))
-// => [ { value: null }, { value: 10 }, { value: 5 } ]
+// => [ { value: 10 }, { value: 5 }, { value: null } ]
 ```
 
 ## API
 
 ### Automatically handled data types
 
-The comparator automatically handles: `string`, `number`, `boolean`, `Date`, and sorts `null`/`undefined` to the beginning, regardless of order. Use a custom selector only for derived values or normalization.
+The comparator automatically handles: `string`, `number`, `boolean`, `Date`, and sorts `null`/`undefined` to the beginning in ascending order and to the end in descending order. Use a custom selector only for derived values or normalization.
 
 ### `by<T>(selector, order?)`
 

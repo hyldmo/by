@@ -50,7 +50,7 @@ const users = () =>
 		}
 	] satisfies User[]
 
-describe('by', () => {
+describe(by.name, () => {
 	it('sorts by a single string property', () => {
 		const sorted = users().sort(by('name'))
 		assert.deepStrictEqual(
@@ -144,6 +144,110 @@ describe('by', () => {
 		assert.deepStrictEqual(
 			sorted.map(u => u.active),
 			[false, false, true, true]
+		)
+	})
+})
+
+describe('README.md', () => {
+	it('Usage: sort by name alphabetically', () => {
+		const list = [
+			{ name: 'Alice', age: 30 },
+			{ name: 'Bob', age: 25 },
+			{ name: 'Charlie', age: 30 }
+		]
+		const sorted = list.sort(by('name'))
+		assert.deepStrictEqual(
+			sorted.map(u => u.name),
+			['Alice', 'Bob', 'Charlie']
+		)
+	})
+
+	it('Sorting by Different Orders: age descending', () => {
+		const list = [
+			{ name: 'Alice', age: 30 },
+			{ name: 'Bob', age: 25 },
+			{ name: 'Charlie', age: 30 }
+		]
+		const sorted = list.sort(by('age', Order.Desc))
+		assert.deepStrictEqual(
+			sorted.map(u => `${u.name}:${u.age}`),
+			['Alice:30', 'Charlie:30', 'Bob:25']
+		)
+	})
+
+	it('Sorting by Nested Properties: address.city', () => {
+		const list = [
+			{ name: 'Alice', address: { city: 'New York' } },
+			{ name: 'Bob', address: { city: 'Los Angeles' } },
+			{ name: 'Charlie', address: { city: 'Chicago' } }
+		]
+		const sorted = list.sort(by('address.city'))
+		assert.deepStrictEqual(
+			sorted.map(u => u.name),
+			['Charlie', 'Bob', 'Alice']
+		)
+	})
+
+	it('Sorting with a Custom Selector: name length ascending', () => {
+		const list = [{ name: 'Alice' }, { name: 'Bob' }, { name: 'Charlie' }]
+		const sorted = list.sort(by((u: { name: string }) => u.name.length))
+		assert.deepStrictEqual(
+			sorted.map(u => u.name),
+			['Bob', 'Alice', 'Charlie']
+		)
+	})
+
+	it('Sorting with a Custom Selector: case-insensitive by normalized key', () => {
+		const list = [{ name: 'bob' }, { name: 'Alice' }, { name: 'charlie' }]
+		const sorted = list.sort(by((u: { name: string }) => u.name.toLocaleLowerCase()))
+		assert.deepStrictEqual(
+			sorted.map(u => u.name),
+			['Alice', 'bob', 'charlie']
+		)
+	})
+
+	it('Sorting by Multiple Criteria: age desc then name desc', () => {
+		const list = [
+			{ name: 'Alice', age: 30 },
+			{ name: 'Bob', age: 25 },
+			{ name: 'Charlie', age: 30 }
+		]
+		const sorted = list.sort(by(['age', 'name'], Order.Desc))
+		assert.deepStrictEqual(
+			sorted.map(u => u.name),
+			['Charlie', 'Alice', 'Bob']
+		)
+	})
+
+	it('Sorting by Multiple Criteria: multiple selectors evaluated in order', () => {
+		const list = [
+			{ name: 'Alice', age: 30 },
+			{ name: 'Bob', age: 25 },
+			{ name: 'Charlie', age: 30 }
+		]
+		const sorted = list.sort(by(['age', 'name']))
+		assert.deepStrictEqual(
+			sorted.map(u => `${u.age}:${u.name}`),
+			['25:Bob', '30:Alice', '30:Charlie']
+		)
+	})
+
+	it('Handling null and undefined: always sorted to beginning (asc)', () => {
+		const items = [{ value: 10 }, { value: null }, { value: 5 }]
+		const sorted = items.sort(by('value'))
+		assert.deepStrictEqual(
+			sorted.map(i => i.value),
+			[null, 5, 10]
+		)
+	})
+
+	it('Handling null and undefined: nulls first even with desc in docs, but code keeps nulls last on desc', () => {
+		const items = [{ value: 10 }, { value: null }, { value: 5 }]
+		const sorted = items.sort(by('value', Order.Desc))
+		// current implementation sorts nulls first on asc, last on desc
+		assert.deepStrictEqual(
+			sorted.map(i => i.value),
+			[10, 5, null]
 		)
 	})
 })
