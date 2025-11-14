@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/hyldmo/by/compare/v1.0.2...v1.0.3) (2025-11-14)
+
+
+### Bug Fixes
+
+* support both esm and js builds ([7050691](https://github.com/hyldmo/by/commit/7050691bb5e19250a64f503ef2db682e46ec1b80))
+
 ## [1.0.2](https://github.com/hyldmo/by/compare/v1.0.1...v1.0.2) (2025-08-27)
 
 
