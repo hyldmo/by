@@ -1,3 +1,10 @@
+## [1.0.6](https://github.com/hyldmo/by/compare/v1.0.5...v1.0.6) (2025-11-14)
+
+
+### Bug Fixes
+
+* make type-fest required and remove overloads ([d7357c2](https://github.com/hyldmo/by/commit/d7357c2e822df422a086c718447e04506118be53))
+
 ## [1.0.5](https://github.com/hyldmo/by/compare/v1.0.4...v1.0.5) (2025-11-14)
 
 
