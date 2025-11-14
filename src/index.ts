@@ -52,8 +52,6 @@ export function compare(a: any, b: any): number {
 	return 0
 }
 
-export function by<T>(selector: Selector<T>, order?: Order): (a: T, b: T) => number
-export function by<T>(selectors: Selector<T>[], order?: Order): (a: T, b: T) => number
 export function by<T>(selectors: Selector<T> | Selector<T>[], order: Order = Order.Asc): (a: T, b: T) => number {
 	if (Array.isArray(selectors)) {
 		return (a: T, b: T) => {
