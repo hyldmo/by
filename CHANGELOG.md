@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/hyldmo/by/compare/v1.0.3...v1.0.4) (2025-11-14)
+
+
+### Bug Fixes
+
+* switch to tsup ([f1d152d](https://github.com/hyldmo/by/commit/f1d152d4847b1eefedc372cd18e35cb1fe1af656))
+
 ## [1.0.3](https://github.com/hyldmo/by/compare/v1.0.2...v1.0.3) (2025-11-14)
 
 
