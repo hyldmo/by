@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/hyldmo/by/compare/v1.0.4...v1.0.5) (2025-11-14)
+
+
+### Bug Fixes
+
+* switch to zshy ([4f9edda](https://github.com/hyldmo/by/commit/4f9edda222766a1a569241a5457a372d372f2571))
+
 ## [1.0.4](https://github.com/hyldmo/by/compare/v1.0.3...v1.0.4) (2025-11-14)
 
 

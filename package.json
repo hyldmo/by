@@ -1,6 +1,6 @@
 {
   "name": "@hyldmo/by",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A simple and powerful sortby implementation in TypeScript.",
   "author": "hyldmo",
   "type": "module",
@@ -44,5 +44,15 @@
     "type-fest": "^4.41.0",
     "typescript": "^5.9.2",
     "zshy": "^0.4.4"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.cts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.cts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
   }
 }
