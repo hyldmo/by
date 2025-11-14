@@ -5,21 +5,6 @@
   "author": "hyldmo",
   "type": "module",
   "packageManager": "yarn@4.9.2",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
-    }
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hyldmo/by.git"
@@ -28,7 +13,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "zshy",
     "prepublishOnly": "yarn build",
     "test": "node --experimental-transform-types src/index.test.ts",
     "lint": "biome lint .",
@@ -37,6 +22,9 @@
     "format:check": "biome format .",
     "semantic-release": "semantic-release",
     "commit": "cz"
+  },
+  "zshy": {
+    "exports": "./src/index.ts"
   },
   "config": {
     "commitizen": {
@@ -53,8 +41,8 @@
     "commitizen": "^4.3.1",
     "cz-conventional-changelog": "^3.3.0",
     "semantic-release": "^24.2.6",
-    "tsup": "^8.5.1",
     "type-fest": "^4.41.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "zshy": "^0.4.4"
   }
 }
