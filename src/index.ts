@@ -1,4 +1,4 @@
-import type { Paths } from 'type-fest'
+import type { Get, Paths } from 'type-fest'
 
 /**
  * Sorting order for the `by` function.
@@ -11,14 +11,29 @@ export enum Order {
 }
 
 /**
- * A selector used to extract a sortable value from an object.
+ * Values that can be compared for sorting.
+ */
+export type Comparable = string | number | boolean | Date | null | undefined | unknown[]
+
+/**
+ * Filters `Paths<T>` to only include paths that resolve to comparable values.
+ * Prevents selecting paths to objects or other non-comparable types.
+ */
+export type ComparablePaths<T> = {
+	[P in Paths<T>]: Get<T, P & string> extends Comparable ? P : never
+}[Paths<T>]
+
+/**
+ * A selector used to extract a comparable value from an object.
  *
  * Can be:
  * - A property key of `T` (e.g., `'name'`)
  * - A dot-path string for nested properties (e.g., `'address.city'`)
- * - A function that returns a sortable value (e.g., `(obj) => obj.name.length`)
+ * - A function that returns a comparable value (e.g., `(obj) => obj.name.length`)
+ *
+ * Only paths resolving to comparable values (string, number, boolean, Date, arrays) are allowed.
  */
-export type Selector<T> = Paths<T> | ((obj: T) => string | number | Date | null | undefined | boolean | unknown[])
+export type Selector<T> = ComparablePaths<T> | ((obj: T) => Comparable)
 
 function get<T>(obj: T, selector: Selector<T>): any {
 	if (typeof selector === 'function') {
