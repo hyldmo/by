@@ -1,10 +1,23 @@
 import type { Paths } from 'type-fest'
 
+/**
+ * Sorting order for the `by` function.
+ */
 export enum Order {
+	/** Sort in ascending order (smallest to largest, A to Z) */
 	Asc = 1,
+	/** Sort in descending order (largest to smallest, Z to A) */
 	Desc = -1
 }
 
+/**
+ * A selector used to extract a sortable value from an object.
+ *
+ * Can be:
+ * - A property key of `T` (e.g., `'name'`)
+ * - A dot-path string for nested properties (e.g., `'address.city'`)
+ * - A function that returns a sortable value (e.g., `(obj) => obj.name.length`)
+ */
 export type Selector<T> = Paths<T> | ((obj: T) => string | number | Date | null | undefined | boolean)
 
 function get<T>(obj: T, selector: Selector<T>): any {
@@ -19,6 +32,23 @@ function get<T>(obj: T, selector: Selector<T>): any {
 	return (obj as any)[selector]
 }
 
+/**
+ * Compares two values for sorting.
+ *
+ * Handles `string`, `number`, `boolean`, and `Date` types automatically.
+ * `null` and `undefined` values are sorted to the beginning.
+ *
+ * @param a - First value to compare
+ * @param b - Second value to compare
+ * @returns Negative if `a < b`, positive if `a > b`, or `0` if equal
+ *
+ * @example
+ * ```ts
+ * compare(1, 2)       // -1
+ * compare('b', 'a')   // 1
+ * compare(null, 5)    // -1
+ * ```
+ */
 export function compare(a: any, b: any): number {
 	if (a === b) {
 		return 0
@@ -52,6 +82,37 @@ export function compare(a: any, b: any): number {
 	return 0
 }
 
+/**
+ * Creates a comparator function for sorting arrays of objects.
+ *
+ * Supports sorting by property keys, nested dot-paths, or custom accessor functions.
+ * Automatically handles `string`, `number`, `boolean`, `Date`, `null`, and `undefined`.
+ *
+ * @param selectors - A selector or array of selectors to extract sortable values.
+ *   - Property key: `'name'`
+ *   - Nested path: `'address.city'`
+ *   - Accessor function: `(obj) => obj.name.length`
+ * @param order - Sort order: `Order.Asc` (default) or `Order.Desc`
+ * @returns A comparator function for use with `Array.prototype.sort`
+ *
+ * @example
+ * ```ts
+ * // Sort by property
+ * users.sort(by('name'))
+ *
+ * // Sort descending
+ * users.sort(by('age', Order.Desc))
+ *
+ * // Sort by nested property
+ * users.sort(by('address.city'))
+ *
+ * // Sort by derived value
+ * users.sort(by(u => u.name.length))
+ *
+ * // Multi-criteria sort (age first, then name)
+ * users.sort(by(['age', 'name']))
+ * ```
+ */
 export function by<T>(selectors: Selector<T> | Selector<T>[], order: Order = Order.Asc): (a: T, b: T) => number {
 	if (Array.isArray(selectors)) {
 		return (a: T, b: T) => {
