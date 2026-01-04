@@ -1,6 +1,7 @@
 name: CI
 
 permissions:
+  id-token: write
   contents: write
   issues: write
   pull-requests: write
@@ -26,9 +27,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'yarn'
-          cache-dependency-path: 'yarn.lock'
+          node-version: "22"
+          cache: "yarn"
+          cache-dependency-path: "yarn.lock"
 
       - name: Install dependencies
         run: yarn install --immutable
@@ -56,10 +57,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'yarn'
-          cache-dependency-path: 'yarn.lock'
-
+          node-version: "22"
+          cache: "yarn"
+          cache-dependency-path: "yarn.lock"
 
       - name: Install dependencies
         run: yarn install --immutable
@@ -69,6 +69,5 @@ jobs:
 
       - name: Release
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: yarn semantic-release
