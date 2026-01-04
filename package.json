@@ -27,6 +27,11 @@
 	"zshy": {
 		"exports": "./src/index.ts"
 	},
+	"tsd": {
+		"compilerOptions": {
+			"module": "nodenext"
+		}
+	},
 	"config": {
 		"commitizen": {
 			"path": "./node_modules/cz-conventional-changelog"

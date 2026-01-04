@@ -1,0 +1,15 @@
+{
+	"editor.defaultFormatter": "biomejs.biome",
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.organizeImports": "explicit",
+		"source.organizeImports.biome": "explicit",
+		"source.fixAll.biome": "explicit",
+		"source.fixAll.eslint": "explicit",
+		"quickfix.biome": "explicit"
+	},
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"explorer.fileNesting.patterns": {
+		"*.ts": "${capture}.js, ${capture}.test.ts, ${capture}.test-d.ts"
+	}
+}
