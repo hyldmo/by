@@ -146,6 +146,24 @@ describe(by.name, () => {
 			[false, false, true, true]
 		)
 	})
+
+	it('sorts arrays by length', () => {
+		const items = [{ tags: ['a', 'b', 'c'] }, { tags: ['x'] }, { tags: ['foo', 'bar'] }]
+		const sorted = items.sort(by('tags'))
+		assert.deepStrictEqual(
+			sorted.map(i => i.tags.length),
+			[1, 2, 3]
+		)
+	})
+
+	it('sorts arrays by length in descending order', () => {
+		const items = [{ tags: ['a', 'b', 'c'] }, { tags: ['x'] }, { tags: ['foo', 'bar'] }]
+		const sorted = items.sort(by('tags', Order.Desc))
+		assert.deepStrictEqual(
+			sorted.map(i => i.tags.length),
+			[3, 2, 1]
+		)
+	})
 })
 
 describe('README.md', () => {

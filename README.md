@@ -8,7 +8,7 @@ A tiny, powerful sorting utility for arrays of objects in TypeScript and JavaScr
 -   **Flexible Selectors**: Sort by property keys, nested paths, or custom accessor functions.
 -   **Multi-Criteria Sorting**: Easily define multiple sorting rules with different orders.
 -   **Intuitive API**: A single function `by` that is easy to learn and use.
--   **Handles Complex Types**: Properly sorts strings, numbers, booleans, Dates, and handles `null`/`undefined` values gracefully.
+-   **Handles Complex Types**: Properly sorts strings, numbers, booleans, Dates, arrays (by length), and handles `null`/`undefined` values gracefully.
 
 ## Installation
 
@@ -107,6 +107,21 @@ users.sort(by(['age', 'name'], Order.Desc))
 users.sort(by(['age', 'name']))
 ```
 
+### Sorting Arrays by Length
+
+Array properties are automatically sorted by their length.
+
+```typescript
+const posts = [
+	{ title: 'Post A', tags: ['js', 'ts', 'react'] },
+	{ title: 'Post B', tags: ['python'] },
+	{ title: 'Post C', tags: ['go', 'rust'] }
+]
+
+posts.sort(by('tags'))
+// => [ { title: 'Post B', tags: ['python'] }, { title: 'Post C', ... }, { title: 'Post A', ... } ]
+```
+
 ### Handling `null` and `undefined`
 
 `null` and `undefined` values are sorted to the beginning in ascending order, and to the end in descending order.
@@ -125,7 +140,7 @@ items.sort(by('value', Order.Desc))
 
 ### Automatically handled data types
 
-The comparator automatically handles: `string`, `number`, `boolean`, `Date`, and sorts `null`/`undefined` to the beginning in ascending order and to the end in descending order. Use a custom selector only for derived values or normalization.
+The comparator automatically handles: `string`, `number`, `boolean`, `Date`, and arrays (by length). `null`/`undefined` are sorted to the beginning in ascending order and to the end in descending order. Use a custom selector only for derived values or normalization.
 
 ### `by<T>(selector, order?)`
 
@@ -152,5 +167,5 @@ export enum Order {
 
 export type Selector<T> =
 	| Paths<T>
-	| ((obj: T) => string | number | Date | null | undefined | boolean)
+	| ((obj: T) => string | number | Date | null | undefined | boolean | unknown[])
 ```

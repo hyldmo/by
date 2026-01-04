@@ -18,7 +18,7 @@ export enum Order {
  * - A dot-path string for nested properties (e.g., `'address.city'`)
  * - A function that returns a sortable value (e.g., `(obj) => obj.name.length`)
  */
-export type Selector<T> = Paths<T> | ((obj: T) => string | number | Date | null | undefined | boolean)
+export type Selector<T> = Paths<T> | ((obj: T) => string | number | Date | null | undefined | boolean | unknown[])
 
 function get<T>(obj: T, selector: Selector<T>): any {
 	if (typeof selector === 'function') {
@@ -35,7 +35,7 @@ function get<T>(obj: T, selector: Selector<T>): any {
 /**
  * Compares two values for sorting.
  *
- * Handles `string`, `number`, `boolean`, and `Date` types automatically.
+ * Handles `string`, `number`, `boolean`, `Date`, and arrays (by length) automatically.
  * `null` and `undefined` values are sorted to the beginning.
  *
  * @param a - First value to compare
@@ -44,9 +44,10 @@ function get<T>(obj: T, selector: Selector<T>): any {
  *
  * @example
  * ```ts
- * compare(1, 2)       // -1
- * compare('b', 'a')   // 1
- * compare(null, 5)    // -1
+ * compare(1, 2)           // -1
+ * compare('b', 'a')       // 1
+ * compare(null, 5)        // -1
+ * compare([1, 2], [1])    // 1 (longer array)
  * ```
  */
 export function compare(a: any, b: any): number {
@@ -72,6 +73,10 @@ export function compare(a: any, b: any): number {
 		return a.getTime() - b.getTime()
 	}
 
+	if (Array.isArray(a) && Array.isArray(b)) {
+		return a.length - b.length
+	}
+
 	if (a < b) {
 		return -1
 	}
@@ -86,7 +91,7 @@ export function compare(a: any, b: any): number {
  * Creates a comparator function for sorting arrays of objects.
  *
  * Supports sorting by property keys, nested dot-paths, or custom accessor functions.
- * Automatically handles `string`, `number`, `boolean`, `Date`, `null`, and `undefined`.
+ * Automatically handles `string`, `number`, `boolean`, `Date`, arrays (by length), `null`, and `undefined`.
  *
  * @param selectors - A selector or array of selectors to extract sortable values.
  *   - Property key: `'name'`
@@ -108,6 +113,9 @@ export function compare(a: any, b: any): number {
  *
  * // Sort by derived value
  * users.sort(by(u => u.name.length))
+ *
+ * // Sort by array property (compares by length)
+ * users.sort(by('tags'))
  *
  * // Multi-criteria sort (age first, then name)
  * users.sort(by(['age', 'name']))
