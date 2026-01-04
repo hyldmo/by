@@ -1,3 +1,16 @@
+# [1.1.0](https://github.com/hyldmo/by/compare/v1.0.6...v1.1.0) (2026-01-04)
+
+
+### Bug Fixes
+
+* added docstrings to functions ([aa4326b](https://github.com/hyldmo/by/commit/aa4326bbe7b5e96e81e8c31243804ba635d7742b))
+* don't allow string paths that would be incomparable ([116337b](https://github.com/hyldmo/by/commit/116337bbfd19bca461cf0d0125904034ebc6acd2))
+
+
+### Features
+
+* add array support ([bf8c4f1](https://github.com/hyldmo/by/commit/bf8c4f1c9e06de60ecaafcb2f84924e7399ffcc9))
+
 ## [1.0.6](https://github.com/hyldmo/by/compare/v1.0.5...v1.0.6) (2025-11-14)
 
 
