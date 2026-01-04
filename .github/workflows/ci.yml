@@ -43,6 +43,9 @@ jobs:
       - name: Test
         run: yarn test
 
+      - name: Test Types
+        run: yarn test:types
+
   release:
     needs: build-and-test
     runs-on: ubuntu-latest
